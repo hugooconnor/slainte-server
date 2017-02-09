@@ -1,51 +1,22 @@
 import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
+import User from '../models/user.model';
 
 const config = require('../../config/env');
 
-// sample user, used for authentication
-const user = {
-  username: 'react',
-  password: 'express'
-};
-
-/**
- * Returns jwt token if valid username and password is provided
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
 function login(req, res, next) {
-  // Ideally you'll fetch this from the db
-  // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
-    const token = jwt.sign({
-      username: user.username
-    }, config.jwtSecret);
-    return res.json({
-      token,
-      username: user.username
-    });
-  }
-
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED);
-  return next(err);
+  User.findByUsername(req.body.username)
+    .then((user) => {
+      if (user.password === req.body.password) { // todo: SHA256 hashing password with the salt
+        const token = jwt.sign({ username: user.username }, config.jwtSecret);
+        return res.json({ token, username: user.username });
+      } else { // eslint-disable-line no-else-return
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED);
+        return next(err);
+      }
+    })
+    .catch(e => res.json(e));
 }
 
-/**
- * This is a protected route. Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
- */
-function getRandomNumber(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  return res.json({
-    user: req.user,
-    num: Math.random() * 100
-  });
-}
-
-export default { login, getRandomNumber };
+export default { login };
