@@ -21,6 +21,7 @@
     "report-coverage": "coveralls < ./coverage/lcov.info"
   },
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "bluebird": "3.4.6",
     "body-parser": "1.15.2",
     "compression": "1.6.2",

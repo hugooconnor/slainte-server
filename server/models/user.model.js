@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.statics = {
   findByUsername(name, callback) {
-    return this.find({ username: new RegExp(name, 'i') }, callback);
+    return this.findOne({ username: new RegExp(name, 'i') }, callback);
   }
 };
 
