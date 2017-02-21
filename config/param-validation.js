@@ -26,5 +26,11 @@ export default {
       username: Joi.string().required(),
       password: Joi.string().required()
     }
+  },
+
+  testEmail: {
+    body: {
+      mail: Joi.string().required()
+    }
   }
 };

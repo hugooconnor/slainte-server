@@ -34,6 +34,9 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
+// use jade templates
+app.set('view engine', 'jade');
+
 // enable detailed API logging in dev env
 if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
